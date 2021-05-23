@@ -1,4 +1,4 @@
-// +build cgo
+// +build !js,!wasm
 
 // Loaded on non-WASM.
 package db
