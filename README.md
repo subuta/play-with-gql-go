@@ -6,7 +6,7 @@ Includes these examples.
 - [x] How to use "github.com/graphql-go/graphql"
 - [x] How to use "github.com/mattn/go-sqlite3"
 - [x] How to run generated WASM in Browser.
-  -  `go-sqlite3` won't work on WASM build.
+  - `go-sqlite3` won't work on WASM build.
 
 ## How to develop
 
