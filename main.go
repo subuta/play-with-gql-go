@@ -1,15 +1,15 @@
 package main
 
 import (
-	"database/sql"
+	sq "github.com/Masterminds/squirrel"
 	"github.com/graphql-go/graphql"
 	"github.com/k0kubun/pp"
+	"github.com/subuta/play-with-gql-go/internal/db"
 	"log"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func main () {
+	// ----- Try [graphql-go/graphql: An implementation of GraphQL for Go / Golang](https://github.com/graphql-go/graphql)
 	// Schema
 	fields := graphql.Fields{
 		"hello": &graphql.Field{
@@ -42,20 +42,16 @@ func main () {
 
 	pp.Println(r.Data)
 
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+	// ----- Try [Masterminds/squirrel: Fluent SQL generation for golang](https://github.com/Masterminds/squirrel)
 
-	rows, err := db.Query("select 1 + 3;")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var count int
-		rows.Scan(&count)
-		pp.Println(count)
-	}
+	users := sq.Select("*").From("users").Join("emails USING (email_id)")
+
+	active := users.Where(sq.Eq{"deleted_at": nil})
+
+	sql_str, args, _ := active.ToSql()
+
+	pp.Println(sql_str, args)
+
+	// ----- Try DB operation with WASM fallback.
+	db.Run()
 }
