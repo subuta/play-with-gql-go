@@ -1,9 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/graphql-go/graphql"
 	"github.com/k0kubun/pp"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main () {
@@ -37,5 +40,22 @@ func main () {
 	}
 	//rJSON, _ := json.Marshal(r)
 
-	pp.Print(r.Data)
+	pp.Println(r.Data)
+
+	db, err := sql.Open("sqlite3", ":memory:")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	rows, err := db.Query("select 1 + 3;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var count int
+		rows.Scan(&count)
+		pp.Println(count)
+	}
 }
